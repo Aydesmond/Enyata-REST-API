@@ -13,50 +13,50 @@ const regReqBodyValidation = (reqBodyFields) => {
 };
 
 const reqBodyValidation = (reqBodyFields) => {
-    const schema = Joi.object({
-        email: Joi.string().max(320).required(),
-        password: Joi.string().min(5).max(12).required(),
-    })
+  const schema = Joi.object({
+    email: Joi.string().max(320).required(),
+    password: Joi.string().min(5).max(12).required(),
+  });
 
-    return schema.validate(reqBodyFields);
+  return schema.validate(reqBodyFields);
 };
 
 exports.validateUserBodyFields = (req, res, next) => {
-    const { error } = regReqBodyValidation(req.body);
-  
-    if (error) {
-      return res
-        .status(400)
-        .send({ status: false, message: error.details[0].message });
-    };
-  
-    next();
+  const { error } = regReqBodyValidation(req.body);
+
+  if (error) {
+    return res
+      .status(400)
+      .send({ status: false, message: error.details[0].message });
+  }
+
+  next();
 };
 
 exports.validReqBodyNeeded = (req, res, next) => {
-    const { error } = reqBodyValidation(req.body);
+  const { error } = reqBodyValidation(req.body);
 
-    if(error) {
-        return res
-            .status(400)
-            .send({status: false, message: error.details[0].message});
-    };
+  if (error) {
+    return res
+      .status(400)
+      .send({ status: false, message: error.details[0].message });
+  }
 
-    next();
-}
+  next();
+};
 
 exports.CheckIfUserAlreadyExists = async (req, res, next) => {
-    const user = await UserModel.findOne({where: {email: req.body.email}});
+  const user = await UserModel.findOne({ where: { email: req.body.email } });
 
-    if(user) {
-        return res.status(400).send({
-            status: false,
-            message: "A user with the credential already exits",
-        });
-    }
+  if (user) {
+    return res.status(400).send({
+      status: false,
+      message: "A user with the credential already exits",
+    });
+  }
 
-    next();
-}
+  next();
+};
 
 exports.validateUser = async (req, res, next) => {
   const user_exists = await UserModel.findOne({
